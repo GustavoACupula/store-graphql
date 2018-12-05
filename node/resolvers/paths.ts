@@ -6,7 +6,7 @@ const paths = {
    */
   addItem: (account, { orderFormId }) => `${paths.orderForm(account)}/${orderFormId}/items`,
   changeToAnonymousUser: (account, { orderFormId }) => `http://${account}.vtexcommercestable.com.br/checkout/changeToAnonymousUser/${orderFormId}`,
-  orderForm: account => `http://${account}.vtexcommercestable.com.br/api/checkout/pub/orderForm`,
+  orderForm: (account: string) => `http://${account}.vtexcommercestable.com.br/api/checkout/pub/orderForm`,
   orderFormCustomData: (account, { orderFormId, appId, field }) => `${paths.orderForm(account)}/${orderFormId}/customData/${appId}/${field}`,
   orderFormIgnoreProfile: (account, { orderFormId }) => `${paths.orderForm(account)}/${orderFormId}/profile`,
   orderFormPayment: (account, { orderFormId }) => `${paths.orderForm(account)}/${orderFormId}/attachments/paymentData`,
@@ -60,7 +60,9 @@ const paths = {
     profile: (id) => `http://api.vtex.com/${account}/dataentities/CL/documents/${id}`,
   }),
 
-  logisticsConfig: account => ({
+  // https://documenter.getpostman.com/view/3848/vtex-logistics-api/Hs42#405fae80-9bbc-471b-92b5-3071bdbfa527
+  logisticsConfig: (account: string) => ({
+    pickupPoints: (lat: string, long: string) => `http://logistics.vtexcommercestable.com.br/api/logistics/pvt/configuration/pickuppoints/_search?an=${account}&page=1&pageSize=100&lat=${lat}&$lon=${long}&maxDistance=10000`,
     shipping: `http://${account}.vtexcommercestable.com.br/api/logistics/pub/shipping/configuration`
   }),
 
