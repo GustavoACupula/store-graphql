@@ -24,7 +24,7 @@ export class SessionDataSource extends RESTDataSource<Context> {
 
   public getSegmentData = () => this.get<SegmentData>('/segments')
 
-  public editSession = async (key, value) => this.post('/sessions', { public: { [key]: { value } } })
+  public editSession = (key, value) => this.post('/sessions', { public: { [key]: { value } } })
 
   get baseURL() {
     const {vtex: {account}} = this.context
