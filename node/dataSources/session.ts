@@ -24,14 +24,15 @@ export class SessionDataSource extends RESTDataSource<Context> {
 
   public getSegmentData = () => this.get<SegmentData>('/segments')
 
+  public editSession = async (key, value) => this.post('/sessions', { public: { [key]: { value } } })
+
   get baseURL() {
     const {vtex: {account}} = this.context
     return `http://${account}.vtexcommercestable.com.br/api`
   }
 
   protected willSendRequest (request: RequestOptions) {
-    const {cookies, vtex: {authToken}} = this.context
-    const segment = cookies.get('vtex_segment')
+    const {vtex: {authToken}, headers} = this.context
 
     if (!request.timeout) {
       request.timeout = DEFAULT_TIMEOUT_MS
@@ -40,7 +41,8 @@ export class SessionDataSource extends RESTDataSource<Context> {
     forEachObjIndexed(
       (value: string, header) => request.headers.set(header, value),
       {
-        ...segment && {Cookie: `vtex_segment=${segment}`},
+        'Content-Type': 'application/json',
+        'Cookie': headers.cookie,
         'Proxy-Authorization': authToken,
       }
     )
