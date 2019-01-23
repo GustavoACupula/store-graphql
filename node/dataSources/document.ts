@@ -2,6 +2,7 @@ import { RESTDataSource } from 'apollo-datasource-rest'
 import FormData from 'form-data'
 import { withMDPagination } from '../resolvers/headers'
 import { parseFieldsToJson } from '../utils'
+import { Headers } from 'apollo-server-env'
 
 interface PaginationArgs {
   page: string,
@@ -52,16 +53,14 @@ export class DocumentDataSource extends RESTDataSource<Context> {
     if (page && pageSize) {
       request.headers = withMDPagination()(vtex, cookie)(+page, +pageSize)
     } else if (formDataHeaders) {
-      request.headers = {
+      request.headers = new Headers({
         'Proxy-Authorization': this.context.vtex.authToken,
         'VtexIdclientAutCookie': this.context.vtex.authToken,
         ...formDataHeaders
-      }
+      })
     } else {
-      request.headers = {
-        Accept: 'application/vnd.vtex.ds.v10+json',
-        Authorization: this.context.vtex.authToken
-      }
+      request.headers.set('Accept', 'application/vnd.vtex.ds.v10+json')
+      request.headers.set('Authorization', this.context.vtex.authToken)
     }
   }
 
